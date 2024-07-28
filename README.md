@@ -1,6 +1,8 @@
 # Auto Major claimer
 Auto claimer for @major
 
+My tg: https://t.me/Zzjjjuuu
+
 ## Functionality
 | Functional                                                     | Supported |
 |----------------------------------------------------------------|:---------:|
