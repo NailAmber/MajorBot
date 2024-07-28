@@ -165,10 +165,12 @@ class MajorBot:
 
     async def make_task(self, resp_json, headers):
         for task in resp_json:
-            if 'https://t.me/' in task['payload']['url'] and not 'boost' in task['payload']['url']:
-
+            
+            if 'https://t.me/' in task['payload']['url'] and 'boost' not in task['payload']['url'] and 'addlist' not in task['payload']['url']:
+              
                 if 'startapp' in task['payload']['url']:
                     bot_username = task['payload']['url'].split('/')[3]
+                    
                     start_param = task['payload']['url'].split('/')[4].split('=')[1]
 
                     await self.client.connect()
@@ -199,14 +201,17 @@ class MajorBot:
                     await self.client.disconnect()
                     
                 await asyncio.sleep(1)
-            # print('task =', task)
             json_data = {
                 'task_id': task['id']
             }
             resp = await self.session.post('https://major.glados.app/api/tasks/', json=json_data, headers=headers)
-            resp_json = resp.json()
-            logger.info(f"Major | Thread {self.thread} | {self.account} | Try task {resp_json['task_id']}")
-            await asyncio.sleep(2)
+            if resp.status_code == 201:
+                resp_json = resp.json()
+                if 'task_id' in resp_json:
+                    logger.info(f"Major | Thread {self.thread} | {self.account} | Try task {resp_json['task_id']}")
+                    await asyncio.sleep(2)
+            else:
+                logger.error(f"Major | Thread {self.thread} | {self.account} | Error {resp.status_code}")
 
     async def login(self):
         query = await self.get_tg_web_data()
