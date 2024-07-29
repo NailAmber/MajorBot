@@ -165,7 +165,8 @@ class MajorBot:
 
     async def make_task(self, resp_json, headers):
         for task in resp_json:
-            
+            if task['id'] in config.BLACKLIST_TASK:
+                continue
             if 'https://t.me/' in task['payload']['url'] and 'boost' not in task['payload']['url'] and 'addlist' not in task['payload']['url']:
               
                 if 'startapp' in task['payload']['url']:
