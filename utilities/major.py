@@ -163,6 +163,9 @@ class MajorBot:
         resp_json = resp.json()
         # print('resp_json ', resp_json)
 
+    async def make_coin_game(self): #915 coins
+        pass
+
     async def make_task(self, resp_json, headers):
         for task in resp_json:
             if task['id'] in config.BLACKLIST_TASK:
@@ -213,7 +216,21 @@ class MajorBot:
                     await asyncio.sleep(2)
             else:
                 logger.error(f"Major | Thread {self.thread} | {self.account} | Error {resp.status_code}")
+    
+    async def hold_coin_task(self, headers):
+        try:
+            resp = await self.session.get('https://major.glados.app/api/bonuses/coins/', headers=headers)
+            resp_json = resp.json()
+            if resp_json['is_available'] == True:
+                logger.info(f"Major | Thread {self.thread} | {self.account} | Holding coin...")
+                await asyncio.sleep(60)
+                resp = await self.session.post('https://major.glados.app/api/bonuses/coins/', headers=headers, json={'coins':915})
+                resp_json = resp.json()
+                if resp_json['success'] == True:
+                    logger.success(f"Major | Thread {self.thread} | {self.account} | Hold coin success: + 915")
 
+        except Exception as e:
+            logger.error(f"Major | Thread {self.thread} | {self.account} | Holding coin error: {e}")
     async def login(self):
         query = await self.get_tg_web_data()
         headers = {
@@ -273,6 +290,10 @@ class MajorBot:
         resp = await self.session.post("https://major.glados.app/api/roulette?", headers=headers)
         resp_json_not_daily = resp.json()
         logger.success(f"Major | Thread {self.thread} | {self.account} | Roulette done")
+        await asyncio.sleep(1)
+
+        await self.hold_coin_task(headers)
+
         await asyncio.sleep(1)
 
         try:
