@@ -23,7 +23,7 @@ My tg: https://t.me/Zzjjjuuu
 | **TIMEOUT**                  | timeout in seconds for checking accounts on valid _(eg 30)_                                    |
 
 ## Requirements
-- Python 3.12 (you can install it [here](https://www.python.org/downloads/release/python-390/)) 
+- Python 3.12 (you can install it [here]([https://www.python.org/downloads/release/python-390/](https://www.python.org/downloads/))) 
 - Telegram API_ID and API_HASH (you can get them [here](https://my.telegram.org/auth))
 
 1. Install the required dependencies:
