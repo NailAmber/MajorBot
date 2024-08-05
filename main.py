@@ -1,4 +1,3 @@
-from utilities.core import create_sessions
 from utilities.telegram import Accounts
 from utilities.starter import majorStart, majorStats
 import asyncio
@@ -16,7 +15,7 @@ async def main():
             f.write("[]")
 
     if action == 3:
-        await create_sessions()
+        await Accounts().create_sessions()
 
     if action == 2:
         await majorStats()
