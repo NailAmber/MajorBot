@@ -26,7 +26,7 @@ class MajorBot:
 
         if proxy:
             proxy = {
-                "scheme": config.PROXY_TYPES['TG'],
+                "scheme": config.PROXY['TYPE']['TG'],
                 "hostname": proxy.split(":")[1].split("@")[1],
                 "port": int(proxy.split(":")[2]),
                 "username": proxy.split(":")[0],
