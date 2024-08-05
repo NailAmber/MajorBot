@@ -17,7 +17,7 @@ My tg: https://t.me/Zzjjjuuu
 ## Settings data/config.py
 | Setting                      | Description                                                                                    |
 |------------------------------|------------------------------------------------------------------------------------------------|
-| **PHONE NUMBER / API_ID / API_HASH** in data/api_config.json         | Platform data from which to launch a Telegram session _(stock - Android)_                      |
+|API_ID / API_HASH 	| Platform data from which to launch a Telegram session |
 | **DELAYS-ACCOUNT**           | Delay between connections to accounts (the more accounts, the longer the delay) _(eg [5, 15])_ |
 | **WORKDIR**                  | directory with session _(eg "sessions/")_                                                      |
 | **TIMEOUT**                  | timeout in seconds for checking accounts on valid _(eg 30)_                                    |
