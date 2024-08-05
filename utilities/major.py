@@ -307,7 +307,7 @@ class MajorBot:
             logger.success(f"Major | Thread {self.thread} | {self.account} | Rating: {rating}, Pos: {position}")
         except Exception as e:
             logger.error(f"Major | Thread {self.thread} | {self.account} | e = {e}")
-        sleep_time = 60 * 60 * 12 + uniform(config.DELAYS['MAJOR_SLEEP'][0], config.DELAYS['MAJOR_SLEEP'][1])
+        sleep_time = 60 * 60 * 8 + uniform(config.DELAYS['MAJOR_SLEEP'][0], config.DELAYS['MAJOR_SLEEP'][1])
         logger.info(f"Major | Thread {self.thread} | {self.account} | Sleep {sleep_time}")
         for _ in range(int(sleep_time / 60)):
             await asyncio.sleep(60)
