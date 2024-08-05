@@ -1,3 +1,7 @@
+API_ID = 123123123
+API_HASH = "hash"
+
+
 DELAYS = {
     'ACCOUNT': [5, 30],  # delay between connections to accounts (the more accounts, the longer the delay)
     'MAJOR_SLEEP': [5, 60*20],
@@ -9,9 +13,13 @@ DELAYS = {
 }
 
 # proxy type for tg client
-PROXY_TYPES = {
-    "TG": "http",  # proxy type for tg client. "socks4", "socks5" and "http" are supported
-    "REQUESTS": "http"  # proxy type for requests. "http" for https and http proxys, "socks5" for socks5 proxy.
+PROXY = {
+    "USE_PROXY_FROM_FILE": False,  # True - if use proxy from file, False - if use proxy from accounts.json
+    "PROXY_PATH": "data/proxy.txt",  # path to file proxy
+    "TYPE": {
+        "TG": "http",  # proxy type for tg client. "socks4", "socks5" and "http" are supported
+        "REQUESTS": "http"  # proxy type for requests. "http" for https and http proxys, "socks5" for socks5 proxy.
+        }
 }
 
 BLACKLIST_TASK = ['ec5aff8e-82d4-4772-8640-36737222805f','bc944f60-87b4-4eb1-8674-61981eec4fa2', '31a44e44-ff64-4ee7-ab77-357d820f4e2c']
