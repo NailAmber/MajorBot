@@ -12,8 +12,8 @@ def clean_brackets(raw_str):
 
 
 def logging_setup():
-    format_info = "<green>{time:HH:mm:ss.SS}</green> | <blue>{level}</blue> | <level>{message}</level>"
-    format_error = "<green>{time:HH:mm:ss.SS}</green> | <blue>{level}</blue> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> | <level>{message}</level>"
+    format_info = "<green>{time:HH:mm:ss.SS}</green> | <blue>{level}</blue>\t| <level>{message}</level>"
+    format_error = "<green>{time:HH:mm:ss.SS}</green> | <blue>{level}</blue>\t| <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> | <level>{message}</level>"
     logger_path = r"logs/out.log"
 
     logger.remove()
