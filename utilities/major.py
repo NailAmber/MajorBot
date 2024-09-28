@@ -12,12 +12,13 @@ import os
 import httpx
 import time
 from pyrogram.raw.functions.messages import RequestWebView
+import random
 
 class MajorBot:
     def __init__(self, thread: int, session_name: str, phone_number: str, proxy: [str, None]):
         self.account = session_name + '.session'
         self.thread = thread
-        self.proxy = f"{config.PROXY_TYPES['REQUESTS']}://{proxy}" if proxy is not None else None
+        self.proxy = f"{config.PROXY['TYPE']["TG"]}://{proxy}" if proxy is not None else None
         self.user_agent_file = "./sessions/user_agents.json"
         self.statistics_file = "./statistics/stats.json"
         self.ref_link_file = "./sessions/ref_links.json"
@@ -161,9 +162,9 @@ class MajorBot:
 
     async def make_task(self, resp_json, headers):
         for task in resp_json:
-            if task['id'] in config.BLACKLIST_TASK:
+            if task['id'] in config.BLACKLIST_TASK or task['is_completed'] == True:
                 continue
-            if 'https://t.me/' in task['payload']['url'] and 'boost' not in task['payload']['url'] and 'addlist' not in task['payload']['url']:
+            if 'https://t.me/' in task['payload']['url'] and 'boost' not in task['payload']['url'] and 'addlist' not in task['payload']['url'] and '?' not in task['payload']['url']:
               
                 if 'startapp' in task['payload']['url']:
                     bot_username = task['payload']['url'].split('/')[3]
@@ -201,38 +202,44 @@ class MajorBot:
             json_data = {
                 'task_id': task['id']
             }
-            resp = await self.session.post('https://major.glados.app/api/tasks/', json=json_data, headers=headers)
+            resp = await self.session.post('https://major.bot/api/tasks/', json=json_data, headers=headers)
             if resp.status_code == 201:
                 resp_json = resp.json()
-                if 'task_id' in resp_json:
-                    logger.info(f"Major | Thread {self.thread} | {self.account} | Try task {resp_json['task_id']}")
-                    await asyncio.sleep(2)
+                if resp_json.get('is_completed') == True:
+                    logger.success(f"Major | Thread {self.thread} | {self.account} | Complete task {resp_json['task_id']}")
+                else:
+                    logger.info(f"Major | Thread {self.thread} | {self.account} | Can't complete task {resp_json['task_id']}")
+                await asyncio.sleep(2)
             else:
                 logger.error(f"Major | Thread {self.thread} | {self.account} | Error {resp.status_code}")
     
     async def hold_coin_task(self, headers):
         try:
-            resp = await self.session.get('https://major.glados.app/api/bonuses/coins/', headers=headers)
+            resp = await self.session.get("https://major.bot/api/bonuses/coins/")
+            if resp.status_code == 400:
+                logger.warning(f"Major | Thread {self.thread} | {self.account} | Can't Hold the coin yet")
+                return
+            # resp = await self.session.get('https://major.glados.app/api/bonuses/coins/', headers=headers)
+            # resp_json = resp.json()
+            # if resp_json['is_available'] == True:
+            logger.info(f"Major | Thread {self.thread} | {self.account} | Holding coin...")
+            await asyncio.sleep(60)
+            resp = await self.session.post('https://major.bot/api/bonuses/coins/', headers=headers, json={'coins':915})
             resp_json = resp.json()
-            if resp_json['is_available'] == True:
-                logger.info(f"Major | Thread {self.thread} | {self.account} | Holding coin...")
-                await asyncio.sleep(60)
-                resp = await self.session.post('https://major.glados.app/api/bonuses/coins/', headers=headers, json={'coins':915})
-                resp_json = resp.json()
-                if resp_json['success'] == True:
-                    logger.success(f"Major | Thread {self.thread} | {self.account} | Hold coin success: + 915")
+            if resp_json['success'] == True:
+                logger.success(f"Major | Thread {self.thread} | {self.account} | Hold coin success: + 915")
 
         except Exception as e:
             logger.error(f"Major | Thread {self.thread} | {self.account} | Holding coin error: {e}")
     async def login(self):
         query = await self.get_tg_web_data()
         headers = {
-        'Host': 'major.glados.app',
+        # 'Host': 'major.glados.app',
         'Pragma': 'no-cache',
         'Cache-Control': 'no-cache',
-        'Sec-Ch-Ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+        # 'Sec-Ch-Ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
         'Sec-Ch-Ua-Mobile': '0',
-        'Sec-Ch-Ua-Platform': '"Android"',
+        # 'Sec-Ch-Ua-Platform': '"Android"',
         'Upgrade-Insecure-Requests': '0',
         'Sec-Fetch-User': '0',
         'Accept': 'application/json, text/plain, */*',
@@ -279,16 +286,34 @@ class MajorBot:
         logger.info(f"Major | Thread {self.thread} | {self.account} | Not Daily tasks, {[task['title'] for task in resp_json_not_daily]}")
         await asyncio.sleep(1)
         await self.make_task(resp_json_not_daily, headers)
-
-        resp = await self.session.post("https://major.glados.app/api/roulette?", headers=headers)
-        resp_json_not_daily = resp.json()
-        logger.success(f"Major | Thread {self.thread} | {self.account} | Roulette done")
+        try:
+            resp = await self.session.get("https://major.bot/api/roulette/", headers=headers)
+            if resp.status_code != 400:
+                resp = await self.session.post('https://major.bot/api/roulette/', headers=headers)
+                logger.success(f"Major | Thread {self.thread} | {self.account} | Roulette done")
+            else:
+                logger.warning(f"Major | Thread {self.thread} | {self.account} | Can't play Roulette yet")
+        except:
+            logger.error(f"Major | Thread {self.thread} | {self.account} | Can'Roulette error")
         await asyncio.sleep(1)
 
         await self.hold_coin_task(headers)
 
-        await asyncio.sleep(1)
+        await asyncio.sleep(3)
 
+        try:
+            resp = await self.session.get("https://major.bot/api/swipe_coin/", headers=headers)
+            if resp.status_code != 400:
+                await asyncio.sleep(60)
+                coins = random.randrange(1500, 2500)
+                # print(coins)
+                resp = await self.session.post('https://major.bot/api/swipe_coin/', headers=headers, json={'coins':coins})
+                if resp.status_code == 201:
+                    logger.success(f"Major | Thread {self.thread} | {self.account} | Swipe-coin done + {coins}")
+            else:
+                logger.warning(f"Major | Thread {self.thread} | {self.account} | Can't Swipe-coin yet")
+        except:
+            logger.error(f"Major | Thread {self.thread} | {self.account} | Swipe-coin error")
         try:
             resp = await self.session.get(f'https://major.glados.app/api/users/{user_id}/', headers=headers)
             resp_json = resp.json()
@@ -411,6 +436,6 @@ class MajorBot:
         me = await self.client.get_me()
         phone_number, name = "'" + me.phone_number, f"{me.first_name} {me.last_name if me.last_name is not None else ''}"
         await self.client.disconnect()
-        proxy = self.proxy.replace(f'{config.PROXY_TYPES["REQUESTS"]}://', "") if self.proxy is not None else '-'
+        proxy = self.proxy.replace(f'{config.PROXY["TYPE"]["TG"]}://', "") if self.proxy is not None else '-'
         
         return [phone_number, name, str(rating), str(position), proxy]

@@ -1,5 +1,5 @@
-API_ID = 123123123
-API_HASH = "hash"
+API_ID = 21598041
+API_HASH = "d165bdf711d9b94b20a2e02d873584e8"
 
 
 DELAYS = {
@@ -22,7 +22,7 @@ PROXY = {
         }
 }
 
-BLACKLIST_TASK = ['ec5aff8e-82d4-4772-8640-36737222805f','bc944f60-87b4-4eb1-8674-61981eec4fa2', '31a44e44-ff64-4ee7-ab77-357d820f4e2c']
+BLACKLIST_TASK = [104, 113, 34, 32, 106, 15, 8, 4, 82, 2, 112, 33]
 
 # session folder (do not change)
 WORKDIR = "sessions/"
